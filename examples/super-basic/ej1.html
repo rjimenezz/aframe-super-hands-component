@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <title>Super Hands (versión Ammo sin físicas)</title>
   <!-- Usamos A-Frame >=1.7.1 para mantener compatibilidad con hand-tracking -->
-  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   <!-- Evitar conflicto con el componente grabbable nativo introducido en A-Frame 1.5.0 -->
   <script>
     if (AFRAME.components['grabbable']) { delete AFRAME.components['grabbable']; }
@@ -39,26 +39,17 @@
       <!-- Mano izquierda -->
       <a-entity id="lhand"
                 hand-controls="hand: left"
-                sphere-collider="objects: .interactuable; radius: 0.09"
-                super-hands="colliderEvent: hitstart;
-                             colliderEventProperty: el;
-                             colliderEndEvent: hitend;
-                             colliderEndEventProperty: el;
-                             grabStartButtons: gripdown, triggerdown;
-                             grabEndButtons: gripup, triggerup;
-                             debug: true">
+                sphere-collider="objects: .interactuable; radius: 0.12"
+                super-hands="grabStartButtons: gripdown, triggerdown; grabEndButtons: gripup, triggerup; debug: true">
+        <!-- Visualización opcional del área de colisión -->
+        <a-sphere radius="0.12" opacity="0.15" color="#0ff"></a-sphere>
       </a-entity>
       <!-- Mano derecha -->
       <a-entity id="rhand"
                 hand-controls="hand: right"
-                sphere-collider="objects: .interactuable; radius: 0.09"
-                super-hands="colliderEvent: hitstart;
-                             colliderEventProperty: el;
-                             colliderEndEvent: hitend;
-                             colliderEndEventProperty: el;
-                             grabStartButtons: gripdown, triggerdown;
-                             grabEndButtons: gripup, triggerup;
-                             debug: true">
+                sphere-collider="objects: .interactuable; radius: 0.12"
+                super-hands="grabStartButtons: gripdown, triggerdown; grabEndButtons: gripup, triggerup; debug: true">
+        <a-sphere radius="0.12" opacity="0.15" color="#f0f"></a-sphere>
       </a-entity>
     </a-entity>
 
