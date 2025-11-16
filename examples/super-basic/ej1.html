@@ -2,52 +2,97 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Super Hands Básico (sin físicas)</title>
-  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-  <!-- Librería super-hands -->
-  <script src="https://rawgit.com/c-frame/aframe-super-hands-component/master/dist/super-hands.js"></script>
+  <title>Super Hands (versión Ammo sin físicas)</title>
+  <!-- Usamos A-Frame >=1.7.1 para mantener compatibilidad con hand-tracking -->
+  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  <!-- Evitar conflicto con el componente grabbable nativo introducido en A-Frame 1.5.0 -->
+  <script>
+    if (AFRAME.components['grabbable']) { delete AFRAME.components['grabbable']; }
+  </script>
+  <!-- Super Hands local (igual que el ejemplo con físicas) -->
+  <script src="../dist/super-hands.js"></script>
+
+  <!-- Componente para cambiar color al soltar sobre el transformador (sin físicas) -->
+  <script>
+    AFRAME.registerComponent('color-randomizer-drop', {
+      init: function () {
+        // Se ejecuta en el droppable (transformer)
+        this.el.addEventListener('drag-drop', function (evt) {
+          // evt.detail.dropped es el elemento soltado
+          const target = evt.detail && evt.detail.dropped;
+          if (target) {
+            target.setAttribute('material', 'color', '#' + (Math.random() * 0xFFFFFF << 0).toString(16));
+          }
+        });
+      }
+    });
+  </script>
+  <style>
+    body { margin:0; }
+  </style>
 </head>
 <body>
+  <!-- Escena sin sistema de físicas: NO gravedad, NO colisiones físicas -->
   <a-scene vr-mode-ui="enabled: true" webxr="optionalFeatures: hand-tracking">
-    <!-- Cámara + manos -->
-    <a-entity>
+    <!-- Rig básico con cámara y manos -->
+    <a-entity id="rig">
       <a-camera position="0 1.6 0"></a-camera>
-
       <!-- Mano izquierda -->
-      <a-entity hand-controls="hand: left"
+      <a-entity id="lhand"
+                hand-controls="hand: left"
                 sphere-collider="objects: .interactuable"
                 super-hands>
       </a-entity>
-
       <!-- Mano derecha -->
-      <a-entity hand-controls="hand: right"
+      <a-entity id="rhand"
+                hand-controls="hand: right"
                 sphere-collider="objects: .interactuable"
                 super-hands>
       </a-entity>
     </a-entity>
 
-    <!-- Cubo interactuable (sin físicas) -->
-    <a-box class="interactuable"
-           position="0 1 -1"
-           depth="0.4" height="0.4" width="0.4"
-           color="#4CC3D9"
-           hoverable
-           grabbable
-           draggable
-           stretchable
-           droppable>
-    </a-box>
+    <!-- Mixins para reutilizar configuraciones similares al ejemplo Ammo -->
+    <a-assets>
+      <a-mixin id="cube"
+               geometry="primitive: box; width: 0.33; height: 0.33; depth: 0.33"
+               hoverable
+               grabbable
+               stretchable
+               draggable
+               droppable
+               event-set__hoveron="_event: hover-start; material.opacity: 0.6; transparent: true"
+               event-set__hoveroff="_event: hover-end; material.opacity: 1; transparent: false"
+               material="color: #AAA">
+      </a-mixin>
+      <a-mixin id="transformer"
+               geometry="primitive: box; width: 0.5; height: 0.5; depth: 0.5"
+               droppable
+               color-randomizer-drop
+               event-set__dragon="_event: dragover-start; material.wireframe: true"
+               event-set__dragoff="_event: dragover-end; material.wireframe: false"
+               material="color: #444">
+      </a-mixin>
+    </a-assets>
 
-    <!-- Plataforma para probar drop -->
-    <a-box class="interactuable"
-           position="0 0.4 -1"
-           depth="0.6" height="0.2" width="0.6"
-           color="#FFC65D"
-           hoverable
-           droppable>
-    </a-box>
+    <!-- Texto explicativo -->
+    <a-text value="Versión del demo Ammo SIN físicas.\nLos cubos no caen ni chocan físicamente.\nPuedes: hover, grab, drag, stretch, drop.\nSoltar sobre el transformador cambia el color del cubo." 
+            position="-2 2 -3" width="4" color="#CCC"></a-text>
 
-    <a-sky color="#222"></a-sky>
+    <!-- Cubos (similar distribución) -->
+    <a-entity class="interactuable cube" mixin="cube" position="0 1 -1" material="color: red"></a-entity>
+    <a-entity class="interactuable cube" mixin="cube" position="0 1 -0.3" material="color: red"></a-entity>
+    <a-entity class="interactuable cube" mixin="cube" position="-0.9 1 -1" material="color: blue"></a-entity>
+    <a-entity class="interactuable cube" mixin="cube" position="-0.9 1 -0.3" material="color: blue"></a-entity>
+    <a-entity class="interactuable cube" mixin="cube" position="0.9 1 -1" material="color: green"></a-entity>
+    <a-entity class="interactuable cube" mixin="cube" position="0.9 1 -0.3" material="color: green"></a-entity>
+
+    <!-- Transformador que produce el cambio de color -->
+    <a-entity class="interactuable" mixin="transformer" position="0 1.6 -1"></a-entity>
+
+    <!-- Una "plataforma" meramente visual sin física -->
+    <a-box position="0 0.4 -1" width="3" height="0.2" depth="2" color="#222" opacity="0.4"></a-box>
+
+    <a-sky color="#111"></a-sky>
   </a-scene>
 </body>
 </html>
