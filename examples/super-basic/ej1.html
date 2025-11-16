@@ -36,18 +36,29 @@
   <a-scene vr-mode-ui="enabled: true" webxr="optionalFeatures: hand-tracking">
     <!-- Rig básico con cámara y manos -->
     <a-entity id="rig">
-      <a-camera position="0 1.6 0"></a-camera>
       <!-- Mano izquierda -->
       <a-entity id="lhand"
                 hand-controls="hand: left"
-                sphere-collider="objects: .interactuable"
-                super-hands>
+                sphere-collider="objects: .interactuable; radius: 0.09"
+                super-hands="colliderEvent: hitstart;
+                             colliderEventProperty: el;
+                             colliderEndEvent: hitend;
+                             colliderEndEventProperty: el;
+                             grabStartButtons: gripdown, triggerdown;
+                             grabEndButtons: gripup, triggerup;
+                             debug: true">
       </a-entity>
       <!-- Mano derecha -->
       <a-entity id="rhand"
                 hand-controls="hand: right"
-                sphere-collider="objects: .interactuable"
-                super-hands>
+                sphere-collider="objects: .interactuable; radius: 0.09"
+                super-hands="colliderEvent: hitstart;
+                             colliderEventProperty: el;
+                             colliderEndEvent: hitend;
+                             colliderEndEventProperty: el;
+                             grabStartButtons: gripdown, triggerdown;
+                             grabEndButtons: gripup, triggerup;
+                             debug: true">
       </a-entity>
     </a-entity>
 
